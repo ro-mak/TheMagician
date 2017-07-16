@@ -2,11 +2,16 @@ package com.makproductions.magician;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
 public class Fireball extends GameObject {
 
     private boolean isShot;
+
+    public void setShot(boolean shot) {
+        isShot = shot;
+    }
 
     public boolean isShot() {
         return isShot;
@@ -15,6 +20,7 @@ public class Fireball extends GameObject {
     public Fireball(float x, float y){
         texture = new Texture("Fireball.png");
         position = new Vector2(x,y);
+        circle = new Circle(position,50);
     }
 
     public void fire(){
@@ -35,6 +41,7 @@ public class Fireball extends GameObject {
         if(isShot&&position.x>1100||position.x<0||position.y>720||position.y<0){
             isShot = false;
         }
+        circle.setPosition(position);
     }
 
 
