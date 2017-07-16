@@ -21,35 +21,41 @@ public class CollisionDetector {
         for (int i = 0; i < units.length; i++) {
             if (units[i].isAlive()) {
                 for (int j = 0; j < fireballs.size(); j++) {
-                    if (units[i].getCircle().contains(fireballs.get(j).getCircle())) {
-                        units[i].setHealth(50);
-                        System.out.println("Hit!");
-                        fireballs.get(j).setShot(false);
-                    }
+//                    if (units[i].getCircle().contains(fireballs.get(j).getCircle())) {
+//                        units[i].setHealth(50);
+//                        System.out.println("Hit!");
+//                        fireballs.get(j).setShot(false);
+//                    }
+                    checkHit(units[i],fireballs.get(j));
                 }
                 if(hero.isAlive()) {
-                    float unitX = units[i].getPosition().x;
-                    float unitY = units[i].getPosition().y;
-                    float heroX = hero.getPosition().x;
-                    float heroY = hero.getPosition().y;
-
-                    float distanceX = heroX - unitX;
-                    float distanceY = heroY - unitY;
-
-                    float boundaryForUnitCoordinateX = distanceX > 0 ? -100 : 100;
-                    float boundaryForUnitCoordinateY = distanceY > 0 ? -150 : 150;
-
-                    float boundaryForHeroCoordinateX = distanceX < 0 ? -100 : 100;
-                    float boundaryForHeroCoordinateY = distanceY < 0 ? -150 : 150;
-
-                    if (distanceX < 100 && distanceX > -100
-                            && distanceY < 150 && distanceY > -150) {
-                       // hero.setHealth(10);
-                        units[i].setPosition(new Vector2(unitX + boundaryForUnitCoordinateX,unitY + boundaryForUnitCoordinateY));
-                        hero.setPosition(new Vector2(heroX + boundaryForHeroCoordinateX,heroY + boundaryForHeroCoordinateY));
-                    }
+                    checkHit(hero,units[i]);
                 }
             }
+        }
+    }
+
+    private void checkHit(Unit unit, GameObject gameObject){
+        float unitX = unit.getPosition().x;
+        float unitY = unit.getPosition().y;
+        float gameObjectX = gameObject.getPosition().x;
+        float gameObjectY = gameObject.getPosition().y;
+
+        float distanceX = gameObjectX - unitX;
+        float distanceY = gameObjectY - unitY;
+
+        float boundaryForUnitCoordinateX = distanceX > 0 ? -20 : 20;
+        float boundaryForUnitCoordinateY = distanceY > 0 ? -20 : 20;
+
+        float boundaryForGameObjectCoordinateX = distanceX < 0 ? -20 : 20;
+        float boundaryForGameObjectCoordinateY = distanceY < 0 ? -20 : 20;
+
+        if (distanceX < 100 && distanceX > -100
+                && distanceY < 250 && distanceY > -50) {
+            unit.setHealth(10);
+            unit.setPosition(new Vector2(unitX + boundaryForUnitCoordinateX,unitY + boundaryForUnitCoordinateY));
+
+            gameObject.setPosition(new Vector2(gameObjectX + boundaryForGameObjectCoordinateX,gameObjectY + boundaryForGameObjectCoordinateY));
         }
     }
 }
