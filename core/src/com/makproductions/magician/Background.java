@@ -3,7 +3,7 @@ package com.makproductions.magician;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Background implements MakRenderable,MakUpdatable {
+public class Background {
 
     private Texture texture;
 

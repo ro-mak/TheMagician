@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Skeleton implements MakFireable,MakUpdatable,MakMovable,MakRenderable,Unit {
+public class Skeleton implements Unit {
 
     private static final int FRAME_COLS = 2, FRAME_ROWS = 1;
 
