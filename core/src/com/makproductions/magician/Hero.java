@@ -9,14 +9,12 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Vector;
 
-public class Hero extends GameObject implements Unit {
-
+public class Hero extends Unit {
 
 
     private int health = 100;
     public static FireballPool fireballPool;
     private Texture texture;
-    private Vector2 position;
     private Circle circle;
     private float speed;
     private final float INITIAL_POSITION_X = 300;
@@ -26,7 +24,7 @@ public class Hero extends GameObject implements Unit {
     private boolean isAlive;
 
     public boolean isAlive() {
-        if(health <= 0){
+        if (health <= 0) {
             return false;
         }
         return isAlive;
@@ -60,7 +58,7 @@ public class Hero extends GameObject implements Unit {
     }
 
     public void render(SpriteBatch batch) {
-        if(isAlive()) {
+        if (isAlive()) {
             batch.draw(texture, position.x, position.y);
             fireballPool.renderFireballs(batch);
         }
@@ -81,27 +79,35 @@ public class Hero extends GameObject implements Unit {
     }
 
     public void move() {
+
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            position.x -= speed;
+            if (position.x + speed <= 1280 && position.x + speed >= 0) {
+                position.x -= speed;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            position.x += speed;
+            if (position.x + speed <= 1280 && position.x + speed >= 0) {
+                position.x += speed;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            position.y -= speed;
+            if (position.y + speed <= 720 && position.y + speed >= 0) {
+                position.y -= speed;
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            position.y += speed;
+                position.y += speed;
         }
+        checkBounds();
     }
 
     private final long CASTING_TIME = 700;
 
     public void update() {
-        if(isAlive()) {
+        if (isAlive()) {
             move();
             fire();
             fireballPool.updateFireballs();
@@ -143,7 +149,7 @@ public class Hero extends GameObject implements Unit {
             return fireball;
         }
 
-        public Vector<Fireball> getFiredFireballs(){
+        public Vector<Fireball> getFiredFireballs() {
             return firedFireballs;
         }
 
