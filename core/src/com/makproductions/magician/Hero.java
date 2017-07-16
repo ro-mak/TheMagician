@@ -16,6 +16,10 @@ public class Hero implements Unit {
     private Vector2 position;
     private Circle circle;
     private float speed;
+    private final float INITIAL_POSITION_X = 300;
+    private final float INITIAL_POSITION_Y = 300;
+    private final int COLLISION_RADIUS = 350;
+    private final int INITIAL_SPEED = 2;
 
     @Override
     public Vector2 getPosition() {
@@ -29,10 +33,10 @@ public class Hero implements Unit {
 
     public Hero() {
 
-        this.position = new Vector2(300, 300);
+        this.position = new Vector2(INITIAL_POSITION_X, INITIAL_POSITION_Y);
         this.texture = new Texture("HeroOnly.png");
-        this.circle = new Circle(position,350);
-        this.speed = 2;
+        this.circle = new Circle(position, COLLISION_RADIUS);
+        this.speed = INITIAL_SPEED;
         this.fireballPool = new FireballPool();
 
     }
@@ -44,8 +48,9 @@ public class Hero implements Unit {
 
     private boolean hasFired = false;
     private long fireTime;
+
     public void fire() {
-        if(!hasFired) {
+        if (!hasFired) {
             Fireball fireball = fireballPool.getFireball();
             if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
                 fireball.fire();
@@ -73,17 +78,18 @@ public class Hero implements Unit {
         }
     }
 
+    private final long CASTING_TIME = 700;
+
     public void update() {
-            move();
-            fire();
-            fireballPool.updateFireballs();
-            if(System.currentTimeMillis() - fireTime > 700){
-                hasFired = false;
-            }
+        move();
+        fire();
+        fireballPool.updateFireballs();
+        if (System.currentTimeMillis() - fireTime > CASTING_TIME) {
+            hasFired = false;
+        }
     }
 
-
-    public void dispose(){
+    public void dispose() {
         texture.dispose();
     }
 
@@ -95,9 +101,9 @@ public class Hero implements Unit {
             initFireballPool();
         }
 
-        public Fireball getFireball(){
+        public Fireball getFireball() {
             Fireball fireball = null;
-            if(freeFireballs.size()<=0) {
+            if (freeFireballs.size() <= 0) {
                 initFireballPool();
             }
             updatePositions();
@@ -109,7 +115,7 @@ public class Hero implements Unit {
                     break;
                 }
             }
-            if(fireball==null){
+            if (fireball == null) {
                 throw new UninitialisedPoolException();
             }
             return fireball;
@@ -117,24 +123,24 @@ public class Hero implements Unit {
 
         public void renderFireballs(SpriteBatch batch) {
             for (int i = 0; i < firedFireballs.size(); i++) {
-                if(firedFireballs.get(i).isShot()){
+                if (firedFireballs.get(i).isShot()) {
                     firedFireballs.get(i).render(batch);
                 }
             }
         }
 
-        private void updatePositions(){
-            Vector2 vector2 = new Vector2(position.x+20,position.y + 110);
-            for (int i = 0; i <freeFireballs.size(); i++) {
-               freeFireballs.get(i).setPosition(vector2);
+        private void updatePositions() {
+            Vector2 vector2 = new Vector2(position.x + 20, position.y + 110);
+            for (int i = 0; i < freeFireballs.size(); i++) {
+                freeFireballs.get(i).setPosition(vector2);
             }
         }
 
         public void updateFireballs() {
             for (int i = 0; i < firedFireballs.size(); i++) {
-                if(firedFireballs.get(i).isShot()){
+                if (firedFireballs.get(i).isShot()) {
                     firedFireballs.get(i).update();
-                }else if(!firedFireballs.get(i).isShot()){
+                } else if (!firedFireballs.get(i).isShot()) {
                     freeFireballs.add(firedFireballs.get(i));
                     firedFireballs.remove(i);
                 }
@@ -142,13 +148,13 @@ public class Hero implements Unit {
         }
 
 
-        private void initFireballPool(){
+        private void initFireballPool() {
             for (int i = 0; i < 10; i++) {
-                freeFireballs.add(new Fireball(0,0));
+                freeFireballs.add(new Fireball(0, 0));
             }
         }
 
-        private class UninitialisedPoolException extends RuntimeException{
+        private class UninitialisedPoolException extends RuntimeException {
 
         }
     }
