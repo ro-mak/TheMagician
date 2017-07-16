@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
-public class Skeleton extends GameObject implements Unit {
+public class Skeleton extends Unit {
 
     private static final int FRAME_COLS = 2, FRAME_ROWS = 1;
 
@@ -39,7 +39,7 @@ public class Skeleton extends GameObject implements Unit {
 
     private TextureRegion currentFrame;
     private float stateTime;
-    private Vector2 position;
+
     private Circle circle;
     private boolean alive = false;
     private boolean attacking = false;
@@ -90,15 +90,14 @@ public class Skeleton extends GameObject implements Unit {
 
             if (unit.isAlive() && attackCircle.contains(unitPosition)) {
                 attacking = true;
-                if (unit.getPosition().x > position.x && position.x < 1280 && position.x > 0) {
+                if (unit.getPosition().x > position.x) {
                     position.x += speed;
-                } else if (unit.getPosition().x < position.x && position.x > 0 && position.x < 1280) {
+                } else if (unit.getPosition().x < position.x) {
                     position.x -= speed;
                 }
-
-                if (unit.getPosition().y > position.y && position.y > 0 && position.y < 768) {
+                if (unit.getPosition().y > position.y) {
                     position.y += speed;
-                } else if (unit.getPosition().y < position.y && position.y > 0 && position.y < 768) {
+                } else if (unit.getPosition().y < position.y) {
                     position.y -= speed;
                 }
             }else{
@@ -113,9 +112,13 @@ public class Skeleton extends GameObject implements Unit {
     }
 
 
-    public void move(){
+    public void move()
+    {
+        checkBounds();
         if(!attacking)position.x -= speed;
     }
+
+
 
     public void update(){
         if(isAlive()) {
