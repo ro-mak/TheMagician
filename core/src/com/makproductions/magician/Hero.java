@@ -9,17 +9,28 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Vector;
 
-public class Hero implements Unit {
+public class Hero extends GameObject implements Unit {
 
-    private FireballPool fireballPool;
+
+
+    private int health = 100;
+    public static FireballPool fireballPool;
     private Texture texture;
     private Vector2 position;
     private Circle circle;
     private float speed;
     private final float INITIAL_POSITION_X = 300;
     private final float INITIAL_POSITION_Y = 300;
-    private final int COLLISION_RADIUS = 350;
+    private final int COLLISION_RADIUS = 200;
     private final int INITIAL_SPEED = 2;
+    private boolean isAlive;
+
+    public boolean isAlive() {
+        if(health <= 0){
+            return false;
+        }
+        return isAlive;
+    }
 
     @Override
     public Vector2 getPosition() {
@@ -31,6 +42,13 @@ public class Hero implements Unit {
         return circle;
     }
 
+    @Override
+    public void setHealth(int health) {
+        this.health -= health;
+        System.out.println("Hero got hit: " + health);
+        System.out.println("Remaining health: " + this.health);
+    }
+
     public Hero() {
 
         this.position = new Vector2(INITIAL_POSITION_X, INITIAL_POSITION_Y);
@@ -38,12 +56,14 @@ public class Hero implements Unit {
         this.circle = new Circle(position, COLLISION_RADIUS);
         this.speed = INITIAL_SPEED;
         this.fireballPool = new FireballPool();
-
+        this.isAlive = true;
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(texture, position.x, position.y);
-        fireballPool.renderFireballs(batch);
+        if(isAlive()) {
+            batch.draw(texture, position.x, position.y);
+            fireballPool.renderFireballs(batch);
+        }
     }
 
     private boolean hasFired = false;
@@ -81,11 +101,13 @@ public class Hero implements Unit {
     private final long CASTING_TIME = 700;
 
     public void update() {
-        move();
-        fire();
-        fireballPool.updateFireballs();
-        if (System.currentTimeMillis() - fireTime > CASTING_TIME) {
-            hasFired = false;
+        if(isAlive()) {
+            move();
+            fire();
+            fireballPool.updateFireballs();
+            if (System.currentTimeMillis() - fireTime > CASTING_TIME) {
+                hasFired = false;
+            }
         }
     }
 
@@ -93,7 +115,7 @@ public class Hero implements Unit {
         texture.dispose();
     }
 
-    private class FireballPool {
+    public class FireballPool {
         private Vector<Fireball> freeFireballs = new Vector<Fireball>();
         private Vector<Fireball> firedFireballs = new Vector<Fireball>();
 
@@ -121,6 +143,10 @@ public class Hero implements Unit {
             return fireball;
         }
 
+        public Vector<Fireball> getFiredFireballs(){
+            return firedFireballs;
+        }
+
         public void renderFireballs(SpriteBatch batch) {
             for (int i = 0; i < firedFireballs.size(); i++) {
                 if (firedFireballs.get(i).isShot()) {
@@ -129,8 +155,11 @@ public class Hero implements Unit {
             }
         }
 
+        private final float FIREBALL_STARTING_CORRECTION_X = 20;
+        private final float FIREBALL_STARTING_CORRECTION_Y = 110;
+
         private void updatePositions() {
-            Vector2 vector2 = new Vector2(position.x + 20, position.y + 110);
+            Vector2 vector2 = new Vector2(position.x + FIREBALL_STARTING_CORRECTION_X, position.y + FIREBALL_STARTING_CORRECTION_Y);
             for (int i = 0; i < freeFireballs.size(); i++) {
                 freeFireballs.get(i).setPosition(vector2);
             }
