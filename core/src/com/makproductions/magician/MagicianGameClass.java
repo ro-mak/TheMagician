@@ -10,14 +10,18 @@ public class MagicianGameClass extends ApplicationAdapter {
     private SpriteBatch batch;
     private Background background;
     private Hero hero;
-    private Skeleton skeleton;
+    private Skeleton[] skeleton = new Skeleton[10];
+    private CollisionDetector collisionDetector;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
         background = new Background();
         hero = new Hero();
-        skeleton = new Skeleton();
+        for (int i = 0; i < skeleton.length ; i++) {
+            skeleton[i] = new Skeleton();
+        }
+        collisionDetector = new CollisionDetector(hero,skeleton);
     }
 
     @Override
@@ -27,7 +31,9 @@ public class MagicianGameClass extends ApplicationAdapter {
         batch.begin();
         background.render(batch);
         hero.render(batch);
-        skeleton.render(batch);
+        for (int i = 0; i < skeleton.length; i++) {
+          if(skeleton[i].isAlive())  skeleton[i].render(batch);
+        }
         batch.end();
     }
 
@@ -35,17 +41,25 @@ public class MagicianGameClass extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         hero.dispose();
-        skeleton.dispose();
+        for (int i = 0; i < skeleton.length; i++) {
+            skeleton[i].dispose();
+        }
     }
 
     public void update() {
         background.update();
         hero.update();
-        skeleton.update();
-        fire();
+        for (int i = 0; i < skeleton.length; i++) {
+            if(skeleton[i].isAlive()) skeleton[i].update();
+        }
+        attack();
+        collisionDetector.checkForCollision();
+
     }
 
-    public void fire(){
-        skeleton.fire(hero);
+    public void attack(){
+        for (int i = 0; i < skeleton.length; i++) {
+            if(skeleton[i].isAlive())  skeleton[i].attack(hero);
+        }
     }
 }
